@@ -1,58 +1,62 @@
-$(document).ready(function() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const movieId = urlParams.get('id'); 
 
+$(document).on("click", ".edit", function () {
+    const movieElement = $(this).closest(".movie-card");
+    const movieId = movieElement.find(".delete-button").data("id");
+
+
+
+    $('#edit-movie-id').val(movieId);
+    $('#edit-nom').val(movieElement.find('.nom').text());
+    $('#edit-dateDeSortie').val(movieElement.find('.dateDeSortie').text());
+    $('#edit-realisateur').val(movieElement.find('.realisateur').text());
+    $('#edit-note').val(movieElement.find('.note').text());
+    $('#edit-notePublic').val(movieElement.find('.notePublic').text());
+    $('#edit-compagnie').val(movieElement.find('.compagnie').text());
+    $('#edit-description').val(movieElement.find('.description').text());
+    $('#edit-lienImage').val(movieElement.find('.lienImage').attr('src'));
+    $('#edit-origine').val(movieElement.find('.origine').text());
+
+    $('#edit-movie-form').show();
+});
+
+
+$('#edit-form').submit(function (event) {
+    event.preventDefault();
+
+    const movieId = $('#edit-movie-id').val();
+    const formData = {
+        nom: $('#edit-nom').val(),
+        realisateur: $('#edit-realisateur').val(),
+        compagnie: $('#edit-compagnie').val(),
+        dateDeSortie: $('#edit-dateDeSortie').val(),
+        note: parseFloat($('#edit-note').val()),
+        notePublic: parseFloat($('#edit-notePublic').val()),
+        description: $('#edit-description').val(),
+        lienImage: $('#edit-lienImage').val(),
+        origine: $('#edit-origine').val()
+    };
 
     $.ajax({
-        url: `http://localhost:3000/movies/${movieId}`,
-        type: 'GET',
-        dataType: 'json',
-        success: function(movie) {
-
-            $('#edit-nom').val(movie.nom);
-            $('#edit-realisateur').val(movie.realisateur);
-            $('#edit-note').val(movie.note);
-            $('#edit-notePublic').val(movie.notePublic);
-            $('#edit-compagnie').val(movie.compagnie);
-            $('#edit-description').val(movie.description);
-            $('#edit-lienImage').val(movie.lienImage);
+        url: `http://localhost:8080/movies/${movieId}`,
+        type: 'PUT',
+        contentType: 'application/json',
+        data: JSON.stringify(formData),
+        success: function (response) {
+            if (response.success) {
+                alert("Film modifié avec succès !");
+                $('#edit-movie-form').hide(); // Masquer le formulaire
+                $('#load-movies-btn').click(); // Rafraîchir la liste des films
+            } else {
+                alert('Erreur lors de la modification du film : ' + response.error);
+            }
         },
-        error: function(xhr, status, error) {
-            console.error("Erreur lors du chargement du film : " + error);
-            alert("Film introuvable !");
-            window.location.href = "index.html";
+        error: function (xhr, status, error) {
+            console.error("Erreur :", error);
+            alert('Erreur lors de la modification du film.');
         }
     });
+});
 
-    $('#edit-movie-form').on('submit', function(event) {
-        event.preventDefault();
-
-        const updatedMovie = {
-            nom: $('#edit-nom').val(),
-            realisateur: $('#edit-realisateur').val(),
-            note: $('#edit-note').val(),
-            notePublic: $('#edit-notePublic').val(),
-            compagnie: $('#edit-compagnie').val(),
-            description: $('#edit-description').val(),
-            lienImage: $('#edit-lienImage').val()
-        };
-
-        $.ajax({
-            url: `http://localhost:3000/movies/${movieId}`,
-            type: 'PUT',
-            contentType: 'application/json',
-            data: JSON.stringify(updatedMovie),
-            success: function(response) {
-                alert('Film modifié avec succès!');
-                window.location.href = "index.html"; 
-            },
-            error: function(xhr, status, error) {
-                alert('Erreur lors de la modification du film.');
-            }
-        });
-    });
-
-    $('#cancel-button').on('click', function() {
-        window.location.href = "index.html";
-    });
+$('#cancel-edit').click(function () {
+    $('#edit-movie-form').hide();
 });
