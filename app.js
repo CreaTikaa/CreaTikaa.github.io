@@ -1,6 +1,7 @@
 $(document).ready(function() {
     function loadMovies(niveau, noteMin, noteMax, origineFilm) {
         $('#movies-container').empty();
+        
 
         $.ajax({
             url: 'http://localhost:3000/movies',
@@ -49,6 +50,20 @@ $(document).ready(function() {
                         deleteMovie(movie.id, instance);
                     });
 
+                    $(instance).find('.edit-button').on('click', function() {
+                        
+                        currentMovieId = movie.id;
+                        $('#edit-nom').val(movie.nom);
+                        $('#edit-realisateur').val(movie.realisateur);
+                        $('#edit-note').val(movie.note);
+                        $('#edit-notePublic').val(movie.notePublic);
+                        $('#edit-compagnie').val(movie.compagnie);
+                        $('#edit-description').val(movie.description);
+                        $('#edit-lienImage').val(movie.lienImage);
+
+                        $('#edit-movie-form').show();
+                    });
+
                     container.append(instance);
                 });
             },
@@ -57,6 +72,41 @@ $(document).ready(function() {
             }
         });
     }
+
+    $('#form-edit-movie').on('submit', function(event) {
+        event.preventDefault();
+
+        const updatedMovie = {
+            nom: $('#edit-nom').val(),
+            realisateur: $('#edit-realisateur').val(),
+            note: $('#edit-note').val(),
+            notePublic: $('#edit-notePublic').val(),
+            compagnie: $('#edit-compagnie').val(),
+            description: $('#edit-description').val(),
+            lienImage: $('#edit-lienImage').val()
+        };
+
+        $.ajax({
+            url: `http://localhost:3000/movies/${currentMovieId}`,
+            type: 'PUT',
+            contentType: 'application/json',
+            data: JSON.stringify(updatedMovie),
+            success: function(response) {
+                alert('Film modifié avec succès!');
+                $('#edit-movie-form').hide();
+                loadMovies('all', null, null, null);
+            },
+            error: function(xhr, status, error) {
+                alert('Erreur lors de la modification du film.');
+            }
+        });
+    });
+
+    $('#close-edit-form').on('click', function() {
+        $('#edit-movie-form').hide();
+    });
+
+
 
     function deleteMovie(id, instance) {
         $.ajax({
