@@ -1,71 +1,55 @@
 $(document).ready(function() {
-    function loadMovies(templateSelector) {
-
-        const goodNote = $('#goodNote').val();
-        const badNote = $('#badNote').val();
-        const origineFilm = $('#FiltrePays').val();
-
-        $('#goodNote').parent().hide();
-        $('#badNote').parent().hide();
+    function loadMovies(niveau, noteMin, noteMax, origineFilm) {
         $('#movies-container').empty();
 
         $.ajax({
             url: 'http://localhost:3000/movies',
             type: 'GET',
             dataType: 'json',
+            data: {
+                niveau: niveau,
+                noteMin: noteMin,
+                noteMax: noteMax,
+                origine: origineFilm
+            },
             success: function(moviesData) {
                 const container = $('#movies-container');
-
+                
                 $.each(moviesData, function(i, movie) {
                     let templateId;
 
-                    if (origineFilm !== "TOUS" && movie.origine !== origineFilm) {
-                        return;
-                    }
-
-                    if (templateSelector === 'banger' && movie.note >= goodNote) {
+                    if (niveau === 'Banger') {
                         templateId = 'banger';
-                    } else if (templateSelector === 'navet' && movie.note <= badNote) {
+                    } else if (niveau === 'Navet') {
                         templateId = 'navets';
-                    } else if (templateSelector === 'all') {
-                        if (movie.note >= goodNote) {
-                            templateId = 'banger';
-                        } else if (movie.note <= badNote) {
-                            templateId = 'navets';
-                        } else {
-                            templateId = 'movie-template';
-                        }
+                    } else {
+                        templateId = 'movie-template';
                     }
 
-                    if (templateId) {
-                        const template = document.getElementById(templateId);
-                        const instance = document.importNode(template.content, true);
+                    const template = document.getElementById(templateId);
+                    const instance = document.importNode(template.content, true);
 
-                        $(instance).find('.nom').text(movie.nom);
-                        $(instance).find('.dateDeSortie').text(movie.dateDeSortie);
-                        $(instance).find('.realisateur').text(movie.realisateur);
-                        $(instance).find('.note').text(movie.note);
-                        $(instance).find('.notePublic').text(movie.notePublic || 'N/A');
-                        $(instance).find('.compagnie').text(movie.compagnie);
-                        $(instance).find('.description').text(movie.description);
-                        $(instance).find('.lienImage').attr('src', movie.lienImage);
+                    $(instance).find('.nom').text(movie.nom);
+                    $(instance).find('.dateDeSortie').text(movie.dateDeSortie);
+                    $(instance).find('.realisateur').text(movie.realisateur);
+                    $(instance).find('.note').text(movie.note);
+                    $(instance).find('.notePublic').text(movie.notePublic || 'N/A');
+                    $(instance).find('.compagnie').text(movie.compagnie);
+                    $(instance).find('.description').text(movie.description);
+                    $(instance).find('.lienImage').attr('src', movie.lienImage);
 
-                        if (movie.notePublic > 0) {
-                            const criticNote = movie.note;
-                            const publicNote = movie.notePublic || 0;
-                            const difference = Math.abs(criticNote - publicNote).toFixed(1);
-                            $(instance).find('.noteDifference').text(difference);
-                        } else {
-                            $(instance).find('.noteDifference').text('Note public indisponible');
-                        }
-
-                    
-                        $(instance).find('.delete-button').on('click', function() {
-                            deleteMovie(movie.id, instance);
-                        });
-
-                        container.append(instance);
+                    if (movie.notePublic > 0) {
+                        const difference = Math.abs(movie.note - movie.notePublic).toFixed(1);
+                        $(instance).find('.noteDifference').text(difference);
+                    } else {
+                        $(instance).find('.noteDifference').text('Note public indisponible');
                     }
+
+                    $(instance).find('.delete-button').on('click', function() {
+                        deleteMovie(movie.id, instance);
+                    });
+
+                    container.append(instance);
                 });
             },
             error: function(xhr, status, error) {
@@ -79,7 +63,7 @@ $(document).ready(function() {
             url: `http://localhost:3000/movies/${id}`,
             type: 'DELETE',
             success: function(response) {
-                alert(response.message); 
+                alert(response.message);
                 $(instance).remove();
             },
             error: function(xhr, status, error) {
@@ -89,27 +73,26 @@ $(document).ready(function() {
     }
 
     $('#loadMoviesButton').on('click', function() {
-        //$(this).hide();
-        loadMovies('all');
+        const niveau = 'all';
+        const noteMin = $('#goodNote').val();
+        const noteMax = $('#badNote').val();
+        const origineFilm = $('#FiltrePays').val();
+        loadMovies(niveau, noteMin, noteMax, origineFilm);
     });
 
     $('#importBanger').on('click', function() {
-        //$(this).hide();
-        loadMovies('banger');
+        const noteMin = $('#goodNote').val();
+        loadMovies('Banger', noteMin, null, $('#FiltrePays').val());
     });
 
     $('#importNavets').on('click', function() {
-        //$(this).hide();
-        loadMovies('navet');
+        const noteMax = $('#badNote').val();
+        loadMovies('Navet', null, noteMax, $('#FiltrePays').val());
     });
 
     $('#clearButton').on('click', function() {
-        $('#loadMoviesButton').show();
-        $('#importBanger').show();
-        $('#importNavets').show();
         $('#goodNote').parent().show();
         $('#badNote').parent().show();
-        $('#countryFilter').val("");
         $('#movies-container').empty();
     });
 });
