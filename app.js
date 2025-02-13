@@ -1,7 +1,6 @@
 $(document).ready(function() {
     function loadMovies(niveau, noteMin, noteMax, origineFilm) {
         $('#movies-container').empty();
-        
 
         $.ajax({
             url: 'http://localhost:3000/movies',
@@ -15,7 +14,7 @@ $(document).ready(function() {
             },
             success: function(moviesData) {
                 const container = $('#movies-container');
-                
+                console.log("Films reçus: ", moviesData);
                 $.each(moviesData, function(i, movie) {
                     let templateId;
 
