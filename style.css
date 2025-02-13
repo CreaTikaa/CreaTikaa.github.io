@@ -112,4 +112,24 @@ h1 {
 #clearButton:hover {
     background-color: goldenrod; 
 }
+.delete-button {
+    background-color: #e74c3c; /* Couleur rouge pour attirer l'attention */
+    color: white;
+    font-size: 14px;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    margin-top: 10px; /* Un petit écart par rapport au contenu */
+    text-align: center;
+}
 
+.delete-button:hover {
+    background-color: #c0392b; /* Couleur plus foncée quand on survole */
+    transform: scale(1.05); /* Effet d'agrandissement au survol */
+}
+
+.delete-button:focus {
+    outline: none; /* Retirer la bordure par défaut */
+}

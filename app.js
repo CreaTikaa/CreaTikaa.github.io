@@ -10,7 +10,7 @@ $(document).ready(function() {
         $('#movies-container').empty();
 
         $.ajax({
-            url: 'movies.json',
+            url: 'http://localhost:3000/movies',
             type: 'GET',
             dataType: 'json',
             success: function(moviesData) {
@@ -23,11 +23,11 @@ $(document).ready(function() {
                         return;
                     }
 
-                    if (templateSelector == 'banger' && movie.note >= goodNote) {
+                    if (templateSelector === 'banger' && movie.note >= goodNote) {
                         templateId = 'banger';
-                    } else if (templateSelector == 'navet' && movie.note <= badNote) {
+                    } else if (templateSelector === 'navet' && movie.note <= badNote) {
                         templateId = 'navets';
-                    } else if (templateSelector == 'all') {
+                    } else if (templateSelector === 'all') {
                         if (movie.note >= goodNote) {
                             templateId = 'banger';
                         } else if (movie.note <= badNote) {
@@ -51,17 +51,20 @@ $(document).ready(function() {
                         $(instance).find('.lienImage').attr('src', movie.lienImage);
 
                         if (movie.notePublic > 0) {
-                        const criticNote = movie.note;
-                        const publicNote = movie.notePublic || 0;
-                        const difference = Math.abs(criticNote - publicNote).toFixed(1);;
-                        $(instance).find('.noteDifference').text(difference);
-                    }
-                    else {
-                        $(instance).find('.noteDifference').text('Note public indisponible');
-                    }
+                            const criticNote = movie.note;
+                            const publicNote = movie.notePublic || 0;
+                            const difference = Math.abs(criticNote - publicNote).toFixed(1);
+                            $(instance).find('.noteDifference').text(difference);
+                        } else {
+                            $(instance).find('.noteDifference').text('Note public indisponible');
+                        }
+
+                    
+                        $(instance).find('.delete-button').on('click', function() {
+                            deleteMovie(movie.id, instance);
+                        });
 
                         container.append(instance);
-                    
                     }
                 });
             },
@@ -70,21 +73,35 @@ $(document).ready(function() {
             }
         });
     }
+
+    function deleteMovie(id, instance) {
+        $.ajax({
+            url: `http://localhost:3000/movies/${id}`,
+            type: 'DELETE',
+            success: function(response) {
+                alert(response.message); 
+                $(instance).remove();
+            },
+            error: function(xhr, status, error) {
+                alert("Erreur lors de la suppression du film");
+            }
+        });
+    }
+
     $('#loadMoviesButton').on('click', function() {
-        $(this).hide();
+        //$(this).hide();
         loadMovies('all');
     });
 
     $('#importBanger').on('click', function() {
-        $(this).hide(); 
+        //$(this).hide();
         loadMovies('banger');
     });
 
     $('#importNavets').on('click', function() {
-        $(this).hide();
+        //$(this).hide();
         loadMovies('navet');
     });
-
 
     $('#clearButton').on('click', function() {
         $('#loadMoviesButton').show();
