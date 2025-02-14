@@ -1,34 +1,31 @@
 $(document).ready(function() {
     function loadMovies(niveau, noteMin, noteMax, origineFilm) {
         $('#movies-container').empty();
-
+    
+        const data = { niveau, origine: origineFilm };
+        if (noteMin) data.noteMin = noteMin;
+        if (noteMax) data.noteMax = noteMax;
+    
         $.ajax({
             url: 'http://localhost:3000/movies',
             type: 'GET',
             dataType: 'json',
-            data: {
-                niveau: niveau,
-                noteMin: noteMin,
-                noteMax: noteMax,
-                origine: origineFilm
-            },
+            data: data,
             success: function(moviesData) {
                 const container = $('#movies-container');
                 console.log("Films reçus: ", moviesData);
                 $.each(moviesData, function(i, movie) {
-                    let templateId;
-
+                    let templateId = 'movie-template';
+    
                     if (niveau === 'Banger') {
                         templateId = 'banger';
                     } else if (niveau === 'Navet') {
                         templateId = 'navets';
-                    } else {
-                        templateId = 'movie-template';
                     }
-
+    
                     const template = document.getElementById(templateId);
                     const instance = document.importNode(template.content, true);
-
+    
                     $(instance).find('.nom').text(movie.nom);
                     $(instance).find('.dateDeSortie').text(movie.dateDeSortie);
                     $(instance).find('.realisateur').text(movie.realisateur);
@@ -37,22 +34,22 @@ $(document).ready(function() {
                     $(instance).find('.compagnie').text(movie.compagnie);
                     $(instance).find('.description').text(movie.description);
                     $(instance).find('.lienImage').attr('src', movie.lienImage);
-
+    
                     if (movie.notePublic > 0) {
                         const difference = Math.abs(movie.note - movie.notePublic).toFixed(1);
                         $(instance).find('.noteDifference').text(difference);
                     } else {
                         $(instance).find('.noteDifference').text('Note public indisponible');
                     }
-
+    
                     $(instance).find('.delete-button').on('click', function() {
                         deleteMovie(movie.id, instance);
                     });
-
+    
                     $(instance).find('.edit-button').on('click', function() {
                         window.location.href = `edit.html?id=${movie.id}`;
                     });
-
+    
                     container.append(instance);
                 });
             },
@@ -61,7 +58,7 @@ $(document).ready(function() {
             }
         });
     }
-
+    
     function deleteMovie(id, instance) {
         $.ajax({
             url: `http://localhost:3000/movies/${id}`,
