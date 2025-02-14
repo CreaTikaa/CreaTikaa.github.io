@@ -76,6 +76,10 @@ $(document).ready(function() {
         });
     }
 
+    $(instance).find('.edit-button').on('click', function() {
+        window.location.href = `edit.html?id=${movie.id}`;
+    });
+
     $('#loadMoviesButton').on('click', function() {
         const niveau = 'all';
         const noteMin = $('#goodNote').val();

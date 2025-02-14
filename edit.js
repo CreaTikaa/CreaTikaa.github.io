@@ -1,62 +1,67 @@
+$(document).ready(function () {
+    const urlParams = new URLSearchParams(window.location.search);
+    const movieId = urlParams.get('id');
 
-$(document).on("click", ".edit", function () {
-    const movieElement = $(this).closest(".movie-card");
-    const movieId = movieElement.find(".delete-button").data("id");
+    if (!movieId) {
+        alert("ID du film non trouvé !");
+        window.location.href = "index.html";
+        return;
+    }
 
-
-
-    $('#edit-movie-id').val(movieId);
-    $('#edit-nom').val(movieElement.find('.nom').text());
-    $('#edit-dateDeSortie').val(movieElement.find('.dateDeSortie').text());
-    $('#edit-realisateur').val(movieElement.find('.realisateur').text());
-    $('#edit-note').val(movieElement.find('.note').text());
-    $('#edit-notePublic').val(movieElement.find('.notePublic').text());
-    $('#edit-compagnie').val(movieElement.find('.compagnie').text());
-    $('#edit-description').val(movieElement.find('.description').text());
-    $('#edit-lienImage').val(movieElement.find('.lienImage').attr('src'));
-    $('#edit-origine').val(movieElement.find('.origine').text());
-
-    $('#edit-movie-form').show();
-});
-
-
-$('#edit-form').submit(function (event) {
-    event.preventDefault();
-
-    const movieId = $('#edit-movie-id').val();
-    const formData = {
-        nom: $('#edit-nom').val(),
-        realisateur: $('#edit-realisateur').val(),
-        compagnie: $('#edit-compagnie').val(),
-        dateDeSortie: $('#edit-dateDeSortie').val(),
-        note: parseFloat($('#edit-note').val()),
-        notePublic: parseFloat($('#edit-notePublic').val()),
-        description: $('#edit-description').val(),
-        lienImage: $('#edit-lienImage').val(),
-        origine: $('#edit-origine').val()
-    };
-
+    // Charger les informations du film
     $.ajax({
-        url: `http://localhost:8080/movies/${movieId}`,
-        type: 'PUT',
-        contentType: 'application/json',
-        data: JSON.stringify(formData),
-        success: function (response) {
-            if (response.success) {
-                alert("Film modifié avec succès !");
-                $('#edit-movie-form').hide(); // Masquer le formulaire
-                $('#load-movies-btn').click(); // Rafraîchir la liste des films
-            } else {
-                alert('Erreur lors de la modification du film : ' + response.error);
-            }
+        url: `http://localhost:3000/movies/${movieId}`,
+        type: "GET",
+        success: function (movie) {
+            $("#nom").val(movie.nom);
+            $("#dateDeSortie").val(movie.dateDeSortie);
+            $("#realisateur").val(movie.realisateur);
+            $("#note").val(movie.note);
+            $("#notePublic").val(movie.notePublic);
+            $("#compagnie").val(movie.compagnie);
+            $("#origine").val(movie.origine);
+            $("#lienImage").val(movie.lienImage);
+            $("#description").val(movie.description);
         },
-        error: function (xhr, status, error) {
-            console.error("Erreur :", error);
-            alert('Erreur lors de la modification du film.');
+        error: function () {
+            alert("Erreur lors du chargement du film !");
+            window.location.href = "index.html";
         }
     });
-});
 
-$('#cancel-edit').click(function () {
-    $('#edit-movie-form').hide();
+    // Enregistrer les modifications
+    $("#editMovieForm").on("submit", function (event) {
+        event.preventDefault();
+
+        const updatedMovie = {
+            nom: $("#nom").val(),
+            dateDeSortie: $("#dateDeSortie").val(),
+            realisateur: $("#realisateur").val(),
+            note: $("#note").val(),
+            notePublic: $("#notePublic").val(),
+            compagnie: $("#compagnie").val(),
+            origine: $("#origine").val(),
+            lienImage: $("#lienImage").val(),
+            description: $("#description").val()
+        };
+
+        $.ajax({
+            url: `http://localhost:3000/movies/${movieId}`,
+            type: "PUT",
+            contentType: "application/json",
+            data: JSON.stringify(updatedMovie),
+            success: function () {
+                alert("Film mis à jour !");
+                window.location.href = "index.html";
+            },
+            error: function () {
+                alert("Erreur lors de la mise à jour !");
+            }
+        });
+    });
+
+    // Annuler et retourner à la page principale
+    $("#cancelButton").on("click", function () {
+        window.location.href = "index.html";
+    });
 });
