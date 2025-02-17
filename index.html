@@ -58,7 +58,7 @@
                 <p><strong>Différence : </strong> <span class="noteDifference"></span></p>
                 <p><strong>Compagnie :</strong> <span class="compagnie"></span></p>
                 <p class="description"></p>
-                <button class="delete-button">Supprimer</button>
+                <button class="delete-button" data-id="{{movie.id}}">Supprimer</button>
                 <button class="edit-button">Modifier</button>
             </div>
         </div>
@@ -76,7 +76,7 @@
                 <p><strong>Différence : </strong> <span class="noteDifference"></span></p>
                 <p><strong>Compagnie :</strong> <span class="compagnie"></span></p>
                 <p class="description"></p>
-                <button class="delete-button">Supprimer</button>
+                <button class="delete-button" data-id="{{movie.id}}">Supprimer</button>
                 <button class="edit-button">Modifier</button>
             </div>
         </div>
@@ -88,14 +88,45 @@
             <div class="content">
                 <h2 class="nom"></h2>
                 <p><strong>Ne vaut même pas la peine </strong>
-                <button class="delete-button">Supprimer</button>
+                    <button class="delete-button" data-id="{{movie.id}}">Supprimer</button>
                 <button class="edit-button">Modifier</button>
             </div>
         </div>
     </template>
 
+    <div id="edit-movie-form" style="display: none;">
+        <h2>Modifier le film</h2>
+        <form id="edit-form">
+            <input type="hidden" id="edit-movie-id" name="id">
+            <label>Nom du film:</label>
+            <input type="text" id="edit-nom" name="nom" required><br>
+            <label>Date de sortie:</label>
+            <input type="text" id="edit-dateDeSortie" name="dateDeSortie" required><br>
+            <label>Réalisateur:</label>
+            <input type="text" id="edit-realisateur" name="realisateur" required><br>
+            <label>Note:</label>
+            <input type="number" id="edit-note" name="note" step="0.1" min="0" max="5" required><br>
+            <label>Note du public:</label>
+            <input type="number" id="edit-notePublic" name="notePublic" step="0.1" min="0" max="5"><br>
+            <label>Compagnie:</label>
+            <input type="text" id="edit-compagnie" name="compagnie" required><br>
+            <label>Description:</label>
+            <textarea id="edit-description" name="description" required></textarea><br>
+            <label>Lien de l'image:</label>
+            <input type="text" id="edit-lienImage" name="lienImage" required><br>
+            <label>Origine:</label>
+            <select id="edit-origine" name="origine" required>
+                <option value="France">France</option>
+                <option value="Angleterre">Angleterre</option>
+                <option value="Belgique">Belgique</option>
+                <option value="Pays-Bas">Pays-Bas</option>
+            </select><br>
+            <button type="submit">Enregistrer</button>
+            <button type="button" id="cancel-edit">Annuler</button>
+        </form>
+    </div>
+
     <script src="app.js"></script>
-    <script src="edit.js"></script>
 </body>
 </html>
 

@@ -134,37 +134,13 @@ h1 {
     outline: none; /* Retirer la bordure par défaut */
 }
 #edit-movie-form {
-    position: fixed; /* Le form sera positionné par rapport à la fenêtre du navigateur */
-    top: 50%; /* Centré verticalement */
-    left: 50%; /* Centré horizontalement */
-    transform: translate(-50%, -50%); /* Pour ajuster le centre exact */
-    background-color: rgba(255, 255, 255, 0.9); /* Légèrement transparent pour l'effet de superposition */
+    background: var(--card-bg);
+    border: 4px solid #fff;
+    border-radius: 8px;
     padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    z-index: 9999; /* Assurer que le form soit au-dessus des autres éléments */
-    display: none; /* Caché par défaut */
-    width: 80%;
-    max-width: 600px; /* Pour limiter la taille du form */
-    text-align: left;
-}
-
-#edit-movie-form input, #edit-movie-form textarea {
-    width: 100%;
-    padding: 10px;
-    margin: 10px 0;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-}
-
-#close-edit-form {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background-color: #e74c3c;
-    color: white;
-    padding: 10px;
-    border-radius: 50%;
-    cursor: pointer;
-    font-size: 20px;
+    max-width: 500px;
+    margin: 20px auto;
+    box-shadow:
+        0 0 0 4px #000,
+        5px 5px 0 5px rgba(0, 0, 0, 0.5);
 }
