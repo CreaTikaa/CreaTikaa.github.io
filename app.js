@@ -7,7 +7,7 @@ $(document).ready(function() {
         if (noteMax) data.noteMax = noteMax;
     
         $.ajax({
-            url: 'https://webeval2-n214wv9hn-creas-projects-b97f3d41.vercel.app/movies',
+            url: 'http://localhost:3000/movies',
             type: 'GET',
             dataType: 'json',
             data: data,
@@ -57,7 +57,7 @@ $(document).ready(function() {
 
     function deleteMovie(id, instance) {
         $.ajax({
-            url: `https://webeval2-n214wv9hn-creas-projects-b97f3d41.vercel.app/movies/${id}`,
+            url: `http://localhost:3000/movies/${id}`,
             type: 'DELETE',
             success: function(response) {
                 alert(response.message);
@@ -106,7 +106,7 @@ $(document).ready(function() {
         console.log("Sending PUT request with data:", formData); // Debugging: Log the data being sent
     
         $.ajax({
-            url: `https://webeval2-n214wv9hn-creas-projects-b97f3d41.vercel.app/movies/${movieId}`,
+            url: `http://localhost:3000/movies/${movieId}`,
             type: 'PUT',
             contentType: 'application/json',
             data: JSON.stringify(formData),
