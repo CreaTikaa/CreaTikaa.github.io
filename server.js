@@ -6,10 +6,10 @@ const moviesData = require('./movies.json');
 const app = express();
 const PORT = 3000;
 
-app.use(cors());
+app.use(cors()); 
 app.use(express.json());
 
-const db = new sqlite3.Database('movies.db', (err) => {
+const db = new sqlite3.Database(':memory:', (err) => {
     if (err) {
         console.error(err.message);
     } else {
@@ -39,6 +39,10 @@ const db = new sqlite3.Database('movies.db', (err) => {
         });
     }
 });
+
+
+
+
 /*
 app.get('/movies', (req, res) => {
     console.log("🔹 Requête 1 reçue avec les paramètres:", req.query);
@@ -80,7 +84,7 @@ app.delete('/movies/:id', (req, res) => {
 });
 
 app.get('/movies', (req, res) => {
-    console.log("🔹 Requête 2 reçue avec les paramètres:", req.query);
+    console.log("recu avec params : ", req.query);
     const { origine, niveau, noteMin, noteMax } = req.query;
     
     let query = "SELECT * FROM movies WHERE 1=1";
@@ -106,18 +110,26 @@ app.get('/movies', (req, res) => {
         }
     }
 
-    console.log("Requête SQL générée:", query);
-    console.log("Paramètres SQL:", params);
+    //console.log("Requête SQL générée:", query);
+    //console.log("Paramètres SQL:", params);
+
+    /*
+    db.get(query, params, (err, row) => {
+        if (err) {
+            return res.status(500).json({ error: err.message });
+        }
+        res.json(row);
+    });
+});*/
 
     db.all(query, params, (err, rows) => {
         if (err) {
             return res.status(500).json({ error: err.message });
         }
         res.json(rows);
+        
     });
 });
-
-
 
 app.put('/movies/:id', (req, res) => {
     const movieId = req.params.id;
@@ -156,12 +168,15 @@ app.get('/movies/:id', (req, res) => {
     });
 });
 */
-
 app.get('/api/hello', (req, res) => {
     res.json({ message: 'Hello from Express on Vercel!' });
 });
 
-module.exports = app;
+app.get('/movies/hello', (req, res) => {
+    res.json({ message: 'Hello2 from Express on Vercel!' });
+});
+
+//module.exports = app;
 
 app.listen(PORT, () => {
     console.log(`Serveur démarré sur http://localhost:${PORT}`);

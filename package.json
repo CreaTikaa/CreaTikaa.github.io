@@ -8,15 +8,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/CreaTikaa/web_practice.git"
+    "url": "git+https://github.com/CreaTikaa/CreaTikaa.github.io.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/CreaTikaa/web_practice/issues"
+    "url": "https://github.com/CreaTikaa/CreaTikaa.github.io/issues"
   },
-  "homepage": "https://github.com/CreaTikaa/web_practice#readme",
+  "homepage": "https://github.com/CreaTikaa/CreaTikaa.github.io#readme",
   "description": "",
   "dependencies": {
     "cors": "^2.8.5",
